@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante Automatizado Inteligente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div id="ready-notification" class="ready-notification hidden">
+            <div class="notif-card">
+                <i class="fas fa-bell"></i>
+                <div class="notif-content">
+                    <h4>¡PEDIDO LISTO!</h4>
+                    <p>Tu platillo está en el mostrador</p>
+                    <button onclick="closeReadyNotif()" class="btn-close-notif">Entendido</button>
+                </div>
+            </div>
+        </div>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <div class="logo-text">
+                    <h1>Restaurante Automatizado</h1>
+                    <p>Sistema de Gestión Profesional</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="admin-info" class="admin-info hidden">
+                    <button onclick="toggleAdminPanel()" class="btn-admin"><i class="fas fa-chart-line"></i> Reportes</button>
+                </div>
+                <div id="user-info" class="user-info hidden">
+                    <span id="user-name"></span>
+                    <button onclick="logout()" class="btn-logout">Salir</button>
+                </div>
+                <div class="cart-summary" id="open-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0 items</span>
+                </div>
+            </div>
+        </div>
+        <nav class="stepper">
+            <div class="step active" data-step="1"><span class="step-number">1</span><span class="step-label">Menú</span></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="2"><span class="step-number">2</span><span class="step-label">Pago</span></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="3"><span class="step-number">3</span><span class="step-label">Estado</span></div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- VISTA DE LOGIN -->
+        <section id="auth-view" class="view active">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-tabs">
+                        <button onclick="showAuthTab('login')" id="tab-login" class="active">Ingresar</button>
+                        <button onclick="showAuthTab('register')" id="tab-register">Registrarse</button>
+                    </div>
+                    
+                    <form id="login-form" class="auth-form">
+                        <h3>Bienvenido de nuevo</h3>
+                        <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                        <input type="password" id="login-password" placeholder="Contraseña" required>
+                        <button type="submit" class="btn-primary">Entrar al Restaurante</button>
+                    </form>
+
+                    <form id="register-form" class="auth-form hidden">
+                        <h3>Crear cuenta nueva</h3>
+                        <input type="text" id="reg-nombre" placeholder="Nombre completo" required>
+                        <input type="email" id="reg-correo" placeholder="Correo electrónico" required>
+                        <input type="text" id="reg-telefono" placeholder="Teléfono" required>
+                        <input type="password" id="reg-password" placeholder="Contraseña" required>
+                        <button type="submit" class="btn-primary">Registrarse ahora</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 1: MENU -->
+        <section id="menu-view" class="view">
+            <div class="trending-section" id="trending-container">
+                <div class="section-header">
+                    <h3><i class="fas fa-fire"></i> Los Más Vendidos</h3>
+                    <p>Lo que todos están pidiendo hoy</p>
+                </div>
+                <div class="trending-grid" id="trending-products">
+                    <!-- Se llena con JS -->
+                </div>
+            </div>
+
+            <div class="categories-bar" id="categories-container"></div>
+            <div class="menu-layout">
+                <div class="products-grid" id="products-container"></div>
+                <aside class="order-sidebar">
+                    <div class="sidebar-card">
+                        <div class="sidebar-header"><h3>Tu Pedido</h3></div>
+                        <div id="cart-items-container" class="cart-items"></div>
+                        <div id="cart-footer" class="cart-footer hidden">
+                            <div class="total-row"><span>Total</span><span id="cart-total-amount">$0</span></div>
+                            <button id="checkout-btn" class="btn-primary">Ir al Pago</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- VISTA 2: PAGO -->
+        <section id="checkout-view" class="view">
+            <div class="checkout-container">
+                <div class="payment-section">
+                    <h3>Finalizar Compra</h3>
+                    <div id="checkout-summary" class="summary-list"></div>
+                    <form id="payment-form" class="payment-form">
+                        <input type="text" placeholder="Número de Tarjeta" required>
+                        <div class="form-row">
+                            <input type="text" placeholder="MM/YY" required>
+                            <input type="password" placeholder="CVV" required maxlength="4">
+                        </div>
+                        <button type="submit" class="btn-primary">Confirmar Pago</button>
+                        <button type="button" onclick="goToStep(1)" class="btn-link">Volver al Menú</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 3: ESTADO -->
+        <section id="status-view" class="view">
+            <div class="status-card">
+                <div class="status-icon-container">
+                    <i class="fas fa-motorcycle delivery-icon"></i>
+                </div>
+                <h2>¡Pedido en Preparación!</h2>
+                <div class="order-info-badge">
+                    <span>Orden #<span id="order-id">---</span></span>
+                </div>
+                
+                <div class="delivery-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <div class="detail-text">
+                            <p class="detail-label">Tiempo Estimado</p>
+                            <p class="detail-value" id="estimated-time">25-35 min</p>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="detail-text">
+                            <p class="detail-label">Destino</p>
+                            <p class="detail-value">Mesa #4 / Domicilio</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-timeline">
+                    <div class="timeline-step completed">
+                        <div class="dot"></div>
+                        <span>Recibido</span>
+                    </div>
+                    <div class="timeline-step active">
+                        <div class="dot"></div>
+                        <span>Cocinando</span>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="dot"></div>
+                        <span>En camino</span>
+                    </div>
+                </div>
+
+                <p class="status-footer-msg">Estamos preparando tu comida con los mejores ingredientes.</p>
+                <button onclick="location.reload()" class="btn-primary">Hacer otro Pedido</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
